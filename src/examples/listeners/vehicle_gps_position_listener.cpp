@@ -38,7 +38,7 @@
  */
 
 #include <rclcpp/rclcpp.hpp>
-#include <px4_msgs/msg/sensor_gps.hpp>
+#include <px4_msgs/msg/vehicle_gps_position.hpp>
 
 /**
  * @brief Vehicle GPS position uORB topic data callback
@@ -46,10 +46,13 @@
 class VehicleGpsPositionListener : public rclcpp::Node
 {
 public:
-	explicit VehicleGpsPositionListener() : Node("vehicle_global_position_listener")
-	{
-		subscription_ = this->create_subscription<px4_msgs::msg::SensorGps>("/fmu/out/vehicle_gps_position", 10,
-		[this](const px4_msgs::msg::SensorGps::UniquePtr msg) {
+	explicit VehicleGpsPositionListener() : Node("vehicle_global_position_listener") {
+		subscription_ = this->create_subscription<px4_msgs::msg::VehicleGpsPosition>(
+			"fmu/vehicle_gps_position/out",
+#ifdef ROS_DEFAULT_API
+            10,
+#endif
+			[this](const px4_msgs::msg::VehicleGpsPosition::UniquePtr msg) {
 			std::cout << "\n\n\n\n\n\n\n\n\n\n";
 			std::cout << "RECEIVED VEHICLE GPS POSITION DATA"   << std::endl;
 			std::cout << "=================================="   << std::endl;
@@ -81,7 +84,7 @@ public:
 	}
 
 private:
-	rclcpp::Subscription<px4_msgs::msg::SensorGps>::SharedPtr subscription_;
+	rclcpp::Subscription<px4_msgs::msg::VehicleGpsPosition>::SharedPtr subscription_;
 };
 
 int main(int argc, char *argv[])
